@@ -1,9 +1,3 @@
-// @title Personas API
-// @version 1.0
-// @description API REST para gestión de personas — Segunda Evaluación Sumativa DevOps, UCN Coquimbo
-// @host localhost:8080
-// @BasePath /
-
 package main
 
 import (

@@ -6,32 +6,6 @@ import (
 	"strings"
 )
 
-// @Summary Listar personas
-// @Description Retorna todas las personas registradas
-// @Produce json
-// @Success 200 {array} Persona
-// @Router /personas [get]
-func swaggerGetPersonas() {}
-
-// @Summary Agregar persona
-// @Description Crea un nuevo registro de persona
-// @Accept json
-// @Produce json
-// @Param persona body Persona true "Datos de la persona"
-// @Success 201 {object} Persona
-// @Failure 400 {object} map[string]string
-// @Router /personas [post]
-func swaggerAddPersona() {}
-
-// @Summary Eliminar persona
-// @Description Elimina una persona por su RUT
-// @Produce json
-// @Param rut path string true "RUT de la persona"
-// @Success 200 {object} map[string]string
-// @Failure 404 {object} map[string]string
-// @Router /personas/{rut} [delete]
-func swaggerDeletePersona() {}
-
 type Handler struct {
 	store *PersonaStore
 }
@@ -78,11 +52,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) getPersonas(w http.ResponseWriter, r *http.Request) {
-	personas := h.store.GetAll()
-	if err := json.NewEncoder(w).Encode(personas); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "internal server error"})
-	}
+	json.NewEncoder(w).Encode(h.store.GetAll())
 }
 
 func (h *Handler) addPersona(w http.ResponseWriter, r *http.Request) {
