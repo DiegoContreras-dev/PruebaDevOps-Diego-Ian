@@ -122,6 +122,12 @@ const docTemplate = `{
                 "fecha_nacimiento": {
                     "type": "string"
                 },
+                "gustos": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "nombre": {
                     "type": "string"
                 },

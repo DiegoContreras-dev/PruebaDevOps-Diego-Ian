@@ -17,9 +17,9 @@ func main() {
 	}
 
 	store := NewPersonaStore()
-	store.Add(Persona{Nombre: "Juan Pérez", RUT: "21614199-2", FechaNacimiento: "1990-05-20", Ciudad: "Santiago"})
-	store.Add(Persona{Nombre: "Ana López", RUT: "18404852-4", FechaNacimiento: "1995-03-15", Ciudad: "Coquimbo"})
-	store.Add(Persona{Nombre: "Diego Contreras", RUT: "12824745-k", FechaNacimiento: "2000-01-01", Ciudad: "La Serena"})
+	store.Add(Persona{Nombre: "Juan Pérez", RUT: "21614199-2", FechaNacimiento: "1990-05-20", Ciudad: "Santiago", Gustos: []string{"fútbol", "pizza", "películas"}})
+	store.Add(Persona{Nombre: "Ana López", RUT: "18404852-4", FechaNacimiento: "1995-03-15", Ciudad: "Coquimbo", Gustos: []string{"lectura", "sushi", "videojuegos"}})
+	store.Add(Persona{Nombre: "Diego Contreras", RUT: "12824745-k", FechaNacimiento: "2000-01-01", Ciudad: "La Serena", Gustos: []string{"ciberseguridad", "golang", "música"}})
 	handler := NewHandler(store)
 
 	mux := http.NewServeMux()

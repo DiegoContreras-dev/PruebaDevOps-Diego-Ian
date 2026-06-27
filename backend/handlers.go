@@ -67,6 +67,10 @@ func (h *Handler) addPersona(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "todos los campos son requeridos"})
 		return
 	}
+	// Garantizar que gustos nunca sea null en la respuesta JSON
+	if p.Gustos == nil {
+		p.Gustos = []string{}
+	}
 	h.store.Add(p)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(p)
