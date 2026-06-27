@@ -52,11 +52,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) getPersonas(w http.ResponseWriter, r *http.Request) {
-	personas := h.store.GetAll()
-	if err := json.NewEncoder(w).Encode(personas); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "internal server error"})
-	}
+	json.NewEncoder(w).Encode(h.store.GetAll())
 }
 
 func (h *Handler) addPersona(w http.ResponseWriter, r *http.Request) {
