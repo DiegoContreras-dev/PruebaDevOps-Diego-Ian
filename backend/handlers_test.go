@@ -8,8 +8,9 @@ import (
 	"testing"
 )
 
+// newTestHandler usa MemoryStore para tests unitarios sin DB real
 func newTestHandler() *Handler {
-	return NewHandler(NewPersonaStore())
+	return NewHandler(NewMemoryStore())
 }
 
 func TestGetPersonas_Empty(t *testing.T) {
@@ -70,7 +71,7 @@ func TestAddPersona_MissingFields(t *testing.T) {
 
 func TestDeletePersona_OK(t *testing.T) {
 	h := newTestHandler()
-	h.store.Add(Persona{Nombre: "Juan Pérez", RUT: "12345678-9", FechaNacimiento: "1990-05-20", Ciudad: "Santiago", Gustos: []string{"fútbol"}})
+	_ = h.store.Add(Persona{Nombre: "Juan Pérez", RUT: "12345678-9", FechaNacimiento: "1990-05-20", Ciudad: "Santiago", Gustos: []string{"fútbol"}})
 	req := httptest.NewRequest(http.MethodDelete, "/personas/12345678-9", nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
@@ -114,7 +115,6 @@ func TestGetPersonas_AfterAdd(t *testing.T) {
 
 func TestAddPersona_SinGustos_RetornaSliceVacio(t *testing.T) {
 	h := newTestHandler()
-	// gustos ausente en el body → debe retornar [] no null
 	body := `{"nombre":"Carlos","rut":"11111111-1","fecha_nacimiento":"2000-01-01","ciudad":"Arica"}`
 	req := httptest.NewRequest(http.MethodPost, "/personas", bytes.NewBufferString(body))
 	w := httptest.NewRecorder()

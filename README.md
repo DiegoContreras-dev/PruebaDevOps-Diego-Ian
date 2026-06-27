@@ -49,6 +49,10 @@ go test ./... -v
 La aplicación está desplegada en **Azure App Service**.  
 URL: *(pendiente)*
 
+### Link Video 
+
+https://drive.google.com/drive/folders/1gKgYxFyY-gt3xpPZ03l_YN3s26rj2Lk4?usp=drive_link
+
 ---
 
 ## Parte 2: Orquestación de Contenedores
