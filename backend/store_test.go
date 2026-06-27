@@ -24,8 +24,8 @@ func TestStore_GetAll_Empty(t *testing.T) {
 
 func TestStore_Delete_Exists(t *testing.T) {
 	s := NewPersonaStore()
-	s.Add(Persona{Nombre: "Juan", RUT: "12345678-9", FechaNacimiento: "1990-01-01", Ciudad: "Santiago"})
-	ok := s.Delete("12345678-9")
+	s.Add(Persona{Nombre: "Juan", RUT: "21614199-2", FechaNacimiento: "1990-01-01", Ciudad: "Santiago"})
+	ok := s.Delete("21614199-2")
 	if !ok {
 		t.Fatal("expected Delete to return true")
 	}
