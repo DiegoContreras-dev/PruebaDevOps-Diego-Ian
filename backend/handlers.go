@@ -2,15 +2,16 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 )
 
 type Handler struct {
-	store *PersonaStore
+	store PersonaRepository
 }
 
-func NewHandler(store *PersonaStore) *Handler {
+func NewHandler(store PersonaRepository) *Handler {
 	return &Handler{store: store}
 }
 
@@ -52,7 +53,14 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) getPersonas(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(h.store.GetAll())
+	personas, err := h.store.GetAll()
+	if err != nil {
+		log.Printf("ERROR GetAll: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "error interno del servidor"})
+		return
+	}
+	json.NewEncoder(w).Encode(personas)
 }
 
 func (h *Handler) addPersona(w http.ResponseWriter, r *http.Request) {
@@ -71,13 +79,25 @@ func (h *Handler) addPersona(w http.ResponseWriter, r *http.Request) {
 	if p.Gustos == nil {
 		p.Gustos = []string{}
 	}
-	h.store.Add(p)
+	if err := h.store.Add(p); err != nil {
+		log.Printf("ERROR Add: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "error interno del servidor"})
+		return
+	}
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(p)
 }
 
 func (h *Handler) deletePersona(w http.ResponseWriter, r *http.Request, rut string) {
-	if !h.store.Delete(rut) {
+	found, err := h.store.Delete(rut)
+	if err != nil {
+		log.Printf("ERROR Delete: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "error interno del servidor"})
+		return
+	}
+	if !found {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(map[string]string{"error": "persona no encontrada"})
 		return
