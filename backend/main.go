@@ -4,15 +4,13 @@ import (
 	"log"
 	"net/http"
 	"os"
-
 	docs "personas-api/docs"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func main() {
-	// Configurar host de Swagger dinámicamente según el entorno.
-	// Azure App Service inyecta WEBSITE_HOSTNAME con el dominio real.
+
 	if azureHost := os.Getenv("WEBSITE_HOSTNAME"); azureHost != "" {
 		docs.SwaggerInfo.Host = azureHost
 		docs.SwaggerInfo.Schemes = []string{"https"}
