@@ -31,12 +31,19 @@ func TestGetPersonas_Empty(t *testing.T) {
 
 func TestAddPersona_OK(t *testing.T) {
 	h := newTestHandler()
-	body := `{"nombre":"Juan Pérez","rut":"12345678-9","fecha_nacimiento":"1990-05-20","ciudad":"Santiago"}`
+	body := `{"nombre":"Juan Pérez","rut":"12345678-9","fecha_nacimiento":"1990-05-20","ciudad":"Santiago","gustos":["fútbol","pizza"]}`
 	req := httptest.NewRequest(http.MethodPost, "/personas", bytes.NewBufferString(body))
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	if w.Code != http.StatusCreated {
 		t.Fatalf("expected 201, got %d", w.Code)
+	}
+	var p Persona
+	if err := json.NewDecoder(w.Body).Decode(&p); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	if len(p.Gustos) != 2 {
+		t.Fatalf("expected 2 gustos, got %d", len(p.Gustos))
 	}
 }
 
@@ -63,7 +70,7 @@ func TestAddPersona_MissingFields(t *testing.T) {
 
 func TestDeletePersona_OK(t *testing.T) {
 	h := newTestHandler()
-	h.store.Add(Persona{Nombre: "Juan Pérez", RUT: "12345678-9", FechaNacimiento: "1990-05-20", Ciudad: "Santiago"})
+	h.store.Add(Persona{Nombre: "Juan Pérez", RUT: "12345678-9", FechaNacimiento: "1990-05-20", Ciudad: "Santiago", Gustos: []string{"fútbol"}})
 	req := httptest.NewRequest(http.MethodDelete, "/personas/12345678-9", nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
@@ -84,7 +91,7 @@ func TestDeletePersona_NotFound(t *testing.T) {
 
 func TestGetPersonas_AfterAdd(t *testing.T) {
 	h := newTestHandler()
-	body := `{"nombre":"Ana López","rut":"98765432-1","fecha_nacimiento":"1995-03-15","ciudad":"Valparaíso"}`
+	body := `{"nombre":"Ana López","rut":"98765432-1","fecha_nacimiento":"1995-03-15","ciudad":"Valparaíso","gustos":["lectura","sushi"]}`
 	postReq := httptest.NewRequest(http.MethodPost, "/personas", bytes.NewBufferString(body))
 	h.ServeHTTP(httptest.NewRecorder(), postReq)
 
@@ -99,6 +106,28 @@ func TestGetPersonas_AfterAdd(t *testing.T) {
 	}
 	if personas[0].RUT != "98765432-1" {
 		t.Fatalf("unexpected RUT: %s", personas[0].RUT)
+	}
+	if len(personas[0].Gustos) != 2 {
+		t.Fatalf("expected 2 gustos, got %d", len(personas[0].Gustos))
+	}
+}
+
+func TestAddPersona_SinGustos_RetornaSliceVacio(t *testing.T) {
+	h := newTestHandler()
+	// gustos ausente en el body → debe retornar [] no null
+	body := `{"nombre":"Carlos","rut":"11111111-1","fecha_nacimiento":"2000-01-01","ciudad":"Arica"}`
+	req := httptest.NewRequest(http.MethodPost, "/personas", bytes.NewBufferString(body))
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, req)
+	if w.Code != http.StatusCreated {
+		t.Fatalf("expected 201, got %d", w.Code)
+	}
+	var p Persona
+	if err := json.NewDecoder(w.Body).Decode(&p); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	if p.Gustos == nil {
+		t.Fatal("gustos debe ser [] no null cuando no se envía")
 	}
 }
 

@@ -3,10 +3,11 @@ package main
 import "sync"
 
 type Persona struct {
-	Nombre          string `json:"nombre"`
-	RUT             string `json:"rut"`
-	FechaNacimiento string `json:"fecha_nacimiento"`
-	Ciudad          string `json:"ciudad"`
+	Nombre          string   `json:"nombre"`
+	RUT             string   `json:"rut"`
+	FechaNacimiento string   `json:"fecha_nacimiento"`
+	Ciudad          string   `json:"ciudad"`
+	Gustos          []string `json:"gustos"`
 }
 
 type PersonaStore struct {
