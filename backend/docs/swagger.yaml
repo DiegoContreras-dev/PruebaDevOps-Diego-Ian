@@ -1,0 +1,85 @@
+basePath: /
+definitions:
+  main.Persona:
+    properties:
+      ciudad:
+        type: string
+      fecha_nacimiento:
+        type: string
+      nombre:
+        type: string
+      rut:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API REST para gestión de personas — Segunda Evaluación Sumativa DevOps,
+    UCN Coquimbo
+  title: Personas API
+  version: "1.0"
+paths:
+  /personas:
+    get:
+      description: Retorna todas las personas registradas
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Persona'
+            type: array
+      summary: Listar personas
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo registro de persona
+      parameters:
+      - description: Datos de la persona
+        in: body
+        name: persona
+        required: true
+        schema:
+          $ref: '#/definitions/main.Persona'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Persona'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Agregar persona
+  /personas/{rut}:
+    delete:
+      description: Elimina una persona por su RUT
+      parameters:
+      - description: RUT de la persona
+        in: path
+        name: rut
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Eliminar persona
+swagger: "2.0"
