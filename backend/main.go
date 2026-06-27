@@ -5,12 +5,19 @@ import (
 	"net/http"
 	"os"
 
-	_ "personas-api/docs"
+	docs "personas-api/docs"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func main() {
+	// Configurar host de Swagger dinámicamente según el entorno.
+	// Azure App Service inyecta WEBSITE_HOSTNAME con el dominio real.
+	if azureHost := os.Getenv("WEBSITE_HOSTNAME"); azureHost != "" {
+		docs.SwaggerInfo.Host = azureHost
+		docs.SwaggerInfo.Schemes = []string{"https"}
+	}
+
 	store := NewPersonaStore()
 	store.Add(Persona{Nombre: "Juan Pérez", RUT: "21614199-2", FechaNacimiento: "1990-05-20", Ciudad: "Santiago"})
 	store.Add(Persona{Nombre: "Ana López", RUT: "18404852-4", FechaNacimiento: "1995-03-15", Ciudad: "Coquimbo"})
